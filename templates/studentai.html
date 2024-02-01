@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if visi_studentai %}
+{% for studentas in visi_studentai %}
+<hr>
+<p>{{studentas.vardas}}</p>
+<p>{{studentas.pavarde}}</p>
+{% if studentas.paskaitos %}
+<p>Paskaitos:</p>
+{% for paskaita in studentas.paskaitos %}
+<p>{{paskaita.vardas}} {{paskaita.savaites_diena}}</p>
+{% endfor %}
+{% endif %}
+
+
+
+
+
+
+
+{% endfor %}
+{% endif %}
+<hr>
+<p><a href="{{ url_for('new_student')}}">Naujas studentas</a></p>
+
+{% endblock %}

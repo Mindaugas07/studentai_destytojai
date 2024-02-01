@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if visos_paskaitos %}
+{% for paskaita in visos_paskaitos %}
+<hr>
+<p>{{paskaita.vardas}}</p>
+<p>{{paskaita.savaites_diena}}</p>
+{% if paskaita.studentai %}
+<p>Studentai:</p>
+{% for studentas in paskaita.studentai %}
+<p>{{studentas.vardas}} {{studentas.pavarde}}</p>
+{% endfor %}
+{% endif %}
+{% if paskaita.destytojas %}
+<p>Destytojai:</p>
+{% for destytojas in paskaita.destytojai %}
+<p>{{destytojas.vardas}} {{destytojas.pavarde}}</p>
+{% endfor %}
+{% endif %}
+
+
+
+
+
+
+
+
+{% endfor %}
+{% endif %}
+<hr>
+<p><a href="{{ 123}}">Nauja paskaita</a></p>
+
+{% endblock %}

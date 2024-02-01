@@ -1,0 +1,12 @@
+Flask
+Flask-WTF
+Flask-SQLAlchemy
+Flask-Migrate
+WTForms-SQLAlchemy
+Flask-RESTful
+Pillow
+Flask-Admin
+Flask-Bcrypt
+Flask-Login
+Flask-Mail
+itsdangerous
