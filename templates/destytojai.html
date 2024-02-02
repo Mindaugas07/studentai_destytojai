@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
-
+<h3>Dėstytojai</h3>
 {% if visi_destytojai %}
 {% for destytojas in visi_destytojai %}
 <hr>
-<p>{{destytojas.vardas}}</p>
-<p>{{destytojas.pavarde}}</p>
+<p>{{destytojas.vardas}} {{destytojas.pavarde}}</p>
+
 {% if destytojas.studentai %}
 <p>Studentai:</p>
 {% for studentas in destytojas.studentai %}
@@ -30,6 +30,6 @@
 {% endfor %}
 {% endif %}
 <hr>
-<p><a href="{{ 123}}">Naujas destytojas</a></p>
+<p><a href="{{ url_for('new_teacher')}}">Naujas destytojas</a></p>
 
 {% endblock %}

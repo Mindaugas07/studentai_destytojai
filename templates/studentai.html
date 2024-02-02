@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
-
+<h3>Studentai</h3>
 {% if visi_studentai %}
 {% for studentas in visi_studentai %}
 <hr>
-<p>{{studentas.vardas}}</p>
-<p>{{studentas.pavarde}}</p>
+<p>{{studentas.vardas}} {{studentas.pavarde}}</p>
+
 {% if studentas.paskaitos %}
 <p>Paskaitos:</p>
 {% for paskaita in studentas.paskaitos %}

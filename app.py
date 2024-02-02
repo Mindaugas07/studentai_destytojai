@@ -70,6 +70,10 @@ def paskaita_query():
     return Paskaita.query
 
 
+def destytojas_query():
+    return Destytojas.query
+
+
 with app.app_context():
     db.create_all()
 
@@ -83,21 +87,38 @@ with app.app_context():
 
     class PaskaitaForm(FlaskForm):
         vardas = StringField("Vardas", [DataRequired()])
-        savaites_diena = StringField("Pavardė", [DataRequired()])
+        savaites_diena = StringField("Savaites diena", [DataRequired()])
         studentai = QuerySelectMultipleField(
-            query_factory=Paskaita.query.all, get_label="vardas", get_pk=get_pk
+            query_factory=Studentas.query.all, get_label="vardas", get_pk=get_pk
         )
+        destytojas = QuerySelectField(
+            query_factory=destytojas_query,
+            allow_blank=True,
+            get_label="vardas",
+            get_pk=lambda obj: str(obj),
+        )
+        print(destytojas)
         submit = SubmitField("Įvesti")
 
     class DestytojasForm(FlaskForm):
         vardas = StringField("Vardas", [DataRequired()])
         pavarde = StringField("Pavardė", [DataRequired()])
-        paskaitos = QuerySelectField(
-            query_factory=paskaita_query,
-            allow_blank=True,
-            get_label="vardas",
-            get_pk=lambda obj: str(obj),
-        )
+        # paskaitos = QuerySelectMultipleField(
+        #     query_factory=paskaita_query,
+        #     allow_blank=True,
+        #     get_label="vardas",
+        #     get_pk=lambda obj: str(obj),
+        # )
+
+        # class DestytojasForm(FlaskForm):
+        #     vardas = StringField("Vardas", [DataRequired()])
+        #     pavarde = StringField("Pavardė", [DataRequired()])
+        #     paskaitos = QuerySelectField(
+        #         query_factory=paskaita_query,
+        #         allow_blank=True,
+        #         get_label="vardas",
+        #         get_pk=lambda obj: str(obj),
+        #     )
         submit = SubmitField("Įvesti")
 
 
@@ -138,7 +159,9 @@ def new_student():
     db.create_all()
     forma = StudentasForm()
     if forma.validate_on_submit():
-        naujas_studentas = Studentas(vardas=forma.vardas.data, pavarde=forma.pavarde.data)
+        naujas_studentas = Studentas(
+            vardas=forma.vardas.data, pavarde=forma.pavarde.data
+        )
         for paskaita in forma.paskaitos.data:
             priskirta_paskaita = Paskaita.query.get(paskaita.id)
             naujas_studentas.paskaitos.append(priskirta_paskaita)
@@ -146,6 +169,46 @@ def new_student():
         db.session.commit()
         return redirect(url_for("students"))
     return render_template("prideti_studenta.html", form=forma)
+
+
+@app.route("/nauja_paskaita", methods=["GET", "POST"])
+def new_lecture():
+    db.create_all()
+    forma = PaskaitaForm()
+    if forma.validate_on_submit():
+        nauja_paskaita = Paskaita(
+            vardas=forma.vardas.data, savaites_diena=forma.savaites_diena.data
+        )
+        for studentas in forma.studentai.data:
+            priskirtas_studentas = Studentas.query.get(studentas.id)
+            nauja_paskaita.studentai.append(priskirtas_studentas)
+        # for destytojas in forma.destytojai.data:
+        destytojas = forma.destytojas.data
+        priskirtas_destytojas = Destytojas.query.get(destytojas.id)
+        print(priskirtas_destytojas)
+        nauja_paskaita.destytojas = priskirtas_destytojas
+        db.session.add(nauja_paskaita)
+        db.session.commit()
+        return redirect(url_for("paskaitos"))
+    return render_template("prideti_paskaita.html", form=forma)
+
+
+@app.route("/naujas_destytojas", methods=["GET", "POST"])
+def new_teacher():
+    db.create_all()
+    forma = DestytojasForm()
+    if forma.validate_on_submit():
+        naujas_destytojas = Destytojas(
+            vardas=forma.vardas.data, pavarde=forma.pavarde.data
+        )
+        # for paskaita in forma.paskaitos.data:
+        #     priskirta_paskaita = Paskaita.query.get(paskaita.id)
+        #     naujas_destytojas.paskaitos.append(priskirta_paskaita)
+        db.session.add(naujas_destytojas)
+        db.session.commit()
+        return redirect(url_for("destytojai"))
+    return render_template("prideti_destytoja.html", form=forma)
+
 
 if __name__ == "__main__":
     app.run(host="127.0.0.1", port=8000, debug=True)
