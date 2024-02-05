@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<form method="post" action="#">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+        {{ form.vardas.label(class="form-control-label") }}
+        {{ form.vardas(class="form-control", value=studentas.vardas) }}
+    </div>
+    <div class="form-group">
+        {{ form.pavarde.label(class="form-control-label") }}
+        {{ form.pavarde(class="form-control", value=studentas.pavarde) }}
+    </div>
+    <div class="form-group">
+        {{ form.paskaitos.label(class="form-control-label") }}
+        {{ form.paskaitos(class="form-control", value=studentas.paskaitos)}}
+    </div>
+
+    {{ form.submit }}
+</form>
+{% endblock %}

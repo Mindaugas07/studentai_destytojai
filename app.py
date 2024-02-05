@@ -103,22 +103,6 @@ with app.app_context():
     class DestytojasForm(FlaskForm):
         vardas = StringField("Vardas", [DataRequired()])
         pavarde = StringField("Pavardė", [DataRequired()])
-        # paskaitos = QuerySelectMultipleField(
-        #     query_factory=paskaita_query,
-        #     allow_blank=True,
-        #     get_label="vardas",
-        #     get_pk=lambda obj: str(obj),
-        # )
-
-        # class DestytojasForm(FlaskForm):
-        #     vardas = StringField("Vardas", [DataRequired()])
-        #     pavarde = StringField("Pavardė", [DataRequired()])
-        #     paskaitos = QuerySelectField(
-        #         query_factory=paskaita_query,
-        #         allow_blank=True,
-        #         get_label="vardas",
-        #         get_pk=lambda obj: str(obj),
-        #     )
         submit = SubmitField("Įvesti")
 
 
@@ -201,13 +185,70 @@ def new_teacher():
         naujas_destytojas = Destytojas(
             vardas=forma.vardas.data, pavarde=forma.pavarde.data
         )
-        # for paskaita in forma.paskaitos.data:
-        #     priskirta_paskaita = Paskaita.query.get(paskaita.id)
-        #     naujas_destytojas.paskaitos.append(priskirta_paskaita)
         db.session.add(naujas_destytojas)
         db.session.commit()
         return redirect(url_for("destytojai"))
     return render_template("prideti_destytoja.html", form=forma)
+
+
+@app.route("/delete_student/<int:id>")
+def delete_student(id):
+    uzklausa = Studentas.query.get(id)
+    db.session.delete(uzklausa)
+    db.session.commit()
+    return redirect(url_for("students"))
+
+
+@app.route("/student_update/<int:id>", methods=["GET", "POST"])
+def student_update(id):
+    form = StudentasForm()
+    studentas = Studentas.query.get(id)
+    if form.validate_on_submit():
+        studentas.vardas = form.vardas.data
+        studentas.pavarde = form.pavarde.data
+        db.session.commit()
+        return redirect(url_for("students"))
+    return render_template("update_student.html", form=form, studentas=studentas)
+
+
+@app.route("/delete_teacher/<int:id>")
+def delete_teacher(id):
+    uzklausa = Destytojas.query.get(id)
+    db.session.delete(uzklausa)
+    db.session.commit()
+    return redirect(url_for("destytojai"))
+
+
+@app.route("/teacher_update/<int:id>", methods=["GET", "POST"])
+def teacher_update(id):
+    form = DestytojasForm()
+    destytojas = Destytojas.query.get(id)
+    if form.validate_on_submit():
+        destytojas.vardas = form.vardas.data
+        destytojas.pavarde = form.pavarde.data
+        db.session.commit()
+        return redirect(url_for("destytojai"))
+    return render_template("update_teacher.html", form=form, destytojas=destytojas)
+
+
+@app.route("/delete_lecture/<int:id>")
+def delete_lecture(id):
+    uzklausa = Paskaita.query.get(id)
+    db.session.delete(uzklausa)
+    db.session.commit()
+    return redirect(url_for("paskaitos"))
+
+
+@app.route("/lecture_update/<int:id>", methods=["GET", "POST"])
+def lecture_update(id):
+    form = PaskaitaForm()
+    paskaita = Paskaita.query.get(id)
+    if form.validate_on_submit():
+        paskaita.vardas = form.vardas.data
+        paskaita.savaites_diena = form.savaites_diena.data
+        db.session.commit()
+        return redirect(url_for("paskaitos"))
+    return render_template("update_lecture.html", form=form, paskaita=paskaita)
 
 
 if __name__ == "__main__":

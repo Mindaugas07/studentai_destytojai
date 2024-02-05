@@ -19,14 +19,8 @@
 <p>{{paskaita.destytojas.vardas}} {{paskaita.destytojas.pavarde}}</p>
 
 {% endif %}
-
-
-
-
-
-
-
-
+<a href="{{ url_for('delete_lecture', id=paskaita['id']) }}">Ištrinti</a>
+<a href="{{ url_for('lecture_update', id=paskaita['id']) }}">Redaguoti</a>
 {% endfor %}
 {% endif %}
 <hr>
